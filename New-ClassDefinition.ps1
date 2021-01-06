@@ -1,4 +1,4 @@
-#requires -Modules @{ModuleName = "PSScriptAnalyzer"; ModuleVersion = "1.19.1"}
+#requires -Version 4 -Modules @{ModuleName = "PSScriptAnalyzer"; ModuleVersion = "1.19.1"}
 
 function New-ClassDefinition
 {
