@@ -1,3 +1,5 @@
+#requires -Modules @{ModuleName = 'PSScriptAnalyzer'; ModuleVersion = '1.19.1'}
+
 function New-ClassDefinition
 {
     <#
@@ -20,13 +22,17 @@ function New-ClassDefinition
     [void]$Def.Append("class ").AppendLine($ClassName)
     [void]$Def.AppendLine("{")
 
+
+    [void]$Def.AppendLine("#region Properties")
     foreach ($Property in $InputObject.PSObject.Properties)
     {
         [void]$Def.Append("[").Append($Property.TypeNameOfValue -replace '^System.').Append("]")
         [void]$Def.Append("$").AppendLine($Property.Name)
     }
+    [void]$Def.AppendLine("#endregion Properties")
 
     [void]$Def.AppendLine("}")
 
-    $Def.ToString()
+
+    Invoke-Formatter $Def.ToString() -Settings CodeFormattingAllman
 }
