@@ -1,4 +1,4 @@
-#requires -Modules @{ModuleName = 'PSScriptAnalyzer'; ModuleVersion = '1.19.1'}
+#requires -Modules @{ModuleName = "PSScriptAnalyzer"; ModuleVersion = "1.19.1"}
 
 function New-ClassDefinition
 {
@@ -27,9 +27,9 @@ function New-ClassDefinition
     $Properties = $InputObject.PSObject.Properties | Sort-Object IsInstance, Name
     foreach ($Property in $Properties)
     {
-        $Type = $Property.TypeNameOfValue -replace '^System.'
+        $Type = $Property.TypeNameOfValue -replace "^System."
 
-        if ($Property.Membertype -eq 'Property' -and -not $Property.IsInstance)
+        if ($Property.Membertype -eq "Property" -and -not $Property.IsInstance)
         {
             [void]$Def.Append("static ")
         }
@@ -48,8 +48,8 @@ function New-ClassDefinition
     $Methods = $InputObject.PSObject.Methods | Sort-Object IsInstance, Name
     foreach ($Method in $Methods)
     {
-        $Type = $Method.Value -replace ' .*' -replace '^System.'
-        $Params = $Method.Value -replace '.*\(' -replace '\)' -split ', '
+        $Type = $Method.Value -replace " .*" -replace "^System."
+        $Params = $Method.Value -replace ".*\(" -replace "\)" -split ", "
         [void]$Def.Append("[").Append($Type).Append("] ")
         [void]$Def.Append($Method.Name)
 
@@ -58,8 +58,8 @@ function New-ClassDefinition
         {
             foreach ($Param in $Params)
             {
-                $PType, $PName = $Param -split ' '
-                $PType = $PType -replace '^System\.'
+                $PType, $PName = $Param -split " "
+                $PType = $PType -replace "^System\."
                 [void]$Def.Append("[").Append($PType).Append("]")
                 [void]$Def.Append("$").Append($PName)
                 [void]$Def.Append(", ")
