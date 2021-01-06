@@ -5,6 +5,91 @@ function New-ClassDefinition
     <#
         .Synopsis
         Given an object, create a powershell class definition, outputted as executable PS code.
+
+        .Parameter InputObject
+        Provide an object from which a class definition is to be generated.
+
+        .Parameter ClassName
+        Provide the name of the generated class.
+
+        .Parameter Property
+        Optionally, restrict the properties from the input object to this set. Works like
+        Select-Object.
+
+        .Parameter ExcludeProperty
+        Optionally, exclude the properties from the input object to ones not in this set. Works like
+        Select-Object.
+
+        .Parameter Method
+        Optionally, restrict the methods from the input object to this set. Works like
+        Select-Object -Property.
+
+        .Parameter ExcludeMethod
+        Optionally, exclude the methods from the input object to ones not in this set. Works like
+        Select-Object -ExcludeProperty.
+
+        .Parameter ConstructorBody
+        If a parameterless constructor exists in the input object, you can supply a body for it with
+        this parameter.
+
+        If no parameterless constructor exists, this parameter has no effect.
+
+        .Example
+        Get-Process -Id $PID | New-ClassDefinition -ClassName Fauxcess -Property Handle* -Method Wait*, Start*
+
+        class Fauxcess
+        {
+            #region Constructors
+            Fauxcess ()
+            {
+                # Replace with your own ctor definition
+            }
+            #endregion Constructors
+
+
+            #region Properties
+            [IntPtr]$Handle
+
+            [Int32]$HandleCount
+
+            [Int32]$Handles
+            #endregion Properties
+
+
+            #region Methods
+            [bool] Start()
+            {
+                # Replace with your own method definition
+                return [bool]::new()
+            }
+
+            [bool] WaitForExit([int]$milliseconds)
+            {
+                # Replace with your own method definition
+                return [bool]::new()
+            }
+
+            [void] WaitForExit()
+            {
+                # Replace with your own method definition
+            }
+
+            [bool] WaitForInputIdle([int]$milliseconds)
+            {
+                # Replace with your own method definition
+                return [bool]::new()
+            }
+
+            [bool] WaitForInputIdle()
+            {
+                # Replace with your own method definition
+                return [bool]::new()
+            }
+            #endregion Methods
+        }
+
+        Generates a class definition from a ProcessInfo object. Placeholder methods matching 'Wait*'
+        and 'Start*' have been added. Only the properties matching 'Handle*' have been included.
     #>
 
     [OutputType([string])]
