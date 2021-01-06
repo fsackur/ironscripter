@@ -19,7 +19,11 @@ function New-ClassDefinition
 
         [string[]]$Property = "*",
 
-        [string[]]$ExcludeProperty
+        [string[]]$ExcludeProperty,
+
+        [string[]]$Method = "*",
+
+        [string[]]$ExcludeMethod
     )
 
     $Def = [Text.StringBuilder]::new()
@@ -59,7 +63,21 @@ function New-ClassDefinition
 
 
     [void]$Def.AppendLine("#region Methods")
-    $Methods = $InputObject.PSObject.Methods | Sort-Object IsInstance, Name
+
+    $SelectSplat = @{
+        Property = $Method
+        ExcludeProperty = $ExcludeMethod
+    }
+    $Intermediate = [pscustomobject](
+        $InputObject.PSObject.Methods |
+            Group-Object Name -AsHashTable
+    )
+    $Intermediate = $Intermediate |
+        Select-Object @SelectSplat
+    $Methods = $Intermediate.PSObject.Properties.Value |
+        Sort-Object IsInstance, Name
+    Remove-Variable Method
+
     foreach ($Method in $Methods)
     {
         $Type = $Method.Value -replace " .*" -replace "^System."
