@@ -23,7 +23,9 @@ function New-ClassDefinition
 
         [string[]]$Method = "*",
 
-        [string[]]$ExcludeMethod
+        [string[]]$ExcludeMethod,
+
+        [scriptblock]$ConstructorBody
     )
 
     # Could put code in process block, but can't think of a use case
@@ -63,7 +65,14 @@ function New-ClassDefinition
         [void]$Def.AppendLine(")")
 
         [void]$Def.AppendLine("{")
-        [void]$Def.AppendLine("# Replace with your own ctor definition")
+        if ($ConstructorBody -and -not $Params)
+        {
+            [void]$Def.AppendLine($ConstructorBody)
+        }
+        else
+        {
+            [void]$Def.AppendLine("# Replace with your own ctor definition")
+        }
         [void]$Def.AppendLine("}")
 
         [void]$Def.AppendLine()
