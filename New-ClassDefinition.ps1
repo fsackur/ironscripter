@@ -102,12 +102,16 @@ function New-ClassDefinition
         [Parameter(Mandatory)]
         [string]$ClassName,
 
+        [SupportsWildcards()]
         [string[]]$Property = "*",
 
+        [SupportsWildcards()]
         [string[]]$ExcludeProperty,
 
+        [SupportsWildcards()]
         [string[]]$Method = "*",
 
+        [SupportsWildcards()]
         [string[]]$ExcludeMethod,
 
         [scriptblock]$ConstructorBody
