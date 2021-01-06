@@ -17,7 +17,7 @@ function New-ClassDefinition
         [Parameter(Mandatory)]
         [string]$ClassName,
 
-        [string[]]$Property,
+        [string[]]$Property = "*",
 
         [string[]]$ExcludeProperty
     )
@@ -28,15 +28,17 @@ function New-ClassDefinition
 
 
     [void]$Def.AppendLine("#region Properties")
-    $Properties = $InputObject.PSObject.Properties |
+
+    $SelectSplat = @{
+        Property = $Property
+        ExcludeProperty = $ExcludeProperty
+    }
+    $FilteredObject = $InputObject |
+        Select-Object @SelectSplat
+    $Properties = $FilteredObject.PSObject.Properties |
         Sort-Object IsInstance, Name
+    Remove-Variable Property    # Because I want to re-use the var name without the constraints
 
-    $PropertyNames = $Properties.Name |
-        Where-Object {$_ -notin $ExcludeProperty} |
-        Where-Object {-not $Property -or $_ -in $Property}
-    Remove-Variable Property
-
-    $Properties = ($Properties | Group-Object Name -AsHashtable)[$PropertyNames]
     foreach ($Property in $Properties)
     {
         $Type = $Property.TypeNameOfValue -replace "^System."
