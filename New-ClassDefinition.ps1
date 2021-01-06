@@ -126,36 +126,39 @@ function New-ClassDefinition
 
     foreach ($Method in $Methods)
     {
-        $Type = $Method.Value -replace " .*" -replace "^System."
-        $Params = $Method.Value -replace ".*\(" -replace "\)" -split ", "
-        [void]$Def.Append("[").Append($Type).Append("] ")
-        [void]$Def.Append($Method.Name)
-
-        [void]$Def.Append("(")
-        if (-not [string]::IsNullOrWhiteSpace($Params))
+        foreach ($Overload in $Method.OverloadDefinitions)
         {
-            foreach ($Param in $Params)
+            $Type = $Overload -replace " .*" -replace "^System."
+            $Params = $Overload -replace ".*\(" -replace "\)" -split ", "
+            [void]$Def.Append("[").Append($Type).Append("] ")
+            [void]$Def.Append($Method.Name)
+
+            [void]$Def.Append("(")
+            if (-not [string]::IsNullOrWhiteSpace($Params))
             {
-                $PType, $PName = $Param -split " "
-                $PType = $PType -replace "^System\."
-                [void]$Def.Append("[").Append($PType).Append("]")
-                [void]$Def.Append("$").Append($PName)
-                [void]$Def.Append(", ")
+                foreach ($Param in $Params)
+                {
+                    $PType, $PName = $Param -split " "
+                    $PType = $PType -replace "^System\."
+                    [void]$Def.Append("[").Append($PType).Append("]")
+                    [void]$Def.Append("$").Append($PName)
+                    [void]$Def.Append(", ")
+                }
+                # Clear the redundant trailing comma
+                $Def.Length -= 2
             }
-            # Clear the redundant trailing comma
-            $Def.Length -= 2
-        }
-        [void]$Def.AppendLine(")")
+            [void]$Def.AppendLine(")")
 
-        [void]$Def.AppendLine("{")
-        [void]$Def.AppendLine("# Replace with your own method definition")
-        if ($Type -ne 'void')
-        {
-            [void]$Def.Append("return [").Append($Type).AppendLine("]::new()")
-        }
-        [void]$Def.AppendLine("}")
+            [void]$Def.AppendLine("{")
+            [void]$Def.AppendLine("# Replace with your own method definition")
+            if ($Type -ne 'void')
+            {
+                [void]$Def.Append("return [").Append($Type).AppendLine("]::new()")
+            }
+            [void]$Def.AppendLine("}")
 
-        [void]$Def.AppendLine()
+            [void]$Def.AppendLine()
+        }
     }
     if ($Methods)
     {
