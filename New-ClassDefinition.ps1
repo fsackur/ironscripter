@@ -10,11 +10,23 @@ function New-ClassDefinition
     param
     (
         [Parameter(Mandatory, Position=0, ValueFromPipeline)]
-        [object]$InputObject
+        [object]$InputObject,
+
+        [Parameter(Mandatory)]
+        [string]$ClassName
     )
 
-    process
-    {
+    $Def = [Text.StringBuilder]::new()
+    [void]$Def.Append("class ").AppendLine($ClassName)
+    [void]$Def.AppendLine("{")
 
+    foreach ($Property in $InputObject.PSObject.Properties)
+    {
+        [void]$Def.Append("[").Append($Property.TypeNameOfValue -replace '^System.').Append("]")
+        [void]$Def.Append("$").AppendLine($Property.Name)
     }
+
+    [void]$Def.AppendLine("}")
+
+    $Def.ToString()
 }
