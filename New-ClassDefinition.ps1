@@ -31,6 +31,40 @@ function New-ClassDefinition
     [void]$Def.AppendLine("{")
 
 
+    [void]$Def.AppendLine("#region Constructors")
+
+    $Type = $InputObject.GetType()
+    $Ctors = $Type.GetConstructors("Instance, Public")
+    foreach ($Ctor in $Ctors)
+    {
+        [void]$Def.Append($ClassName).Append(" (")
+
+        $Params = $Ctor.GetParameters()
+        if ($Params)
+        {
+            foreach ($Param in $Params)
+            {
+                $PName = $Param.Name
+                $PType = $Param.ParameterType -replace "^System\."
+                [void]$Def.Append("[").Append($PType).Append("]")
+                [void]$Def.Append("$").Append($PName)
+                [void]$Def.Append(", ")
+            }
+            # Clear the redundant trailing comma
+            $Def.Length -= 2
+        }
+        [void]$Def.AppendLine(")")
+
+        [void]$Def.AppendLine("{")
+        [void]$Def.AppendLine("# Replace with your own ctor definition")
+        [void]$Def.AppendLine("}")
+    }
+    [void]$Def.AppendLine("#endregion Constructors")
+
+
+    [void]$Def.AppendLine().AppendLine()
+
+
     [void]$Def.AppendLine("#region Properties")
 
     $SelectSplat = @{
