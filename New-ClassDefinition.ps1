@@ -26,6 +26,13 @@ function New-ClassDefinition
         [string[]]$ExcludeMethod
     )
 
+    # Could put code in process block, but can't think of a use case
+    if ($input.Count -gt 1)
+    {
+        Write-Warning "More than one object was piped to $($MyInvocation.MyCommand.Name); only the last object will be used."
+    }
+
+
     $Def = [Text.StringBuilder]::new()
     [void]$Def.Append("class ").AppendLine($ClassName)
     [void]$Def.AppendLine("{")
