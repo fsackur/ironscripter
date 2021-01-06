@@ -24,9 +24,16 @@ function New-ClassDefinition
 
 
     [void]$Def.AppendLine("#region Properties")
-    foreach ($Property in $InputObject.PSObject.Properties)
+    $Properties = $InputObject.PSObject.Properties
+    foreach ($Property in $Properties)
     {
-        [void]$Def.Append("[").Append($Property.TypeNameOfValue -replace '^System.').Append("]")
+        $Type = $Property.TypeNameOfValue -replace '^System.'
+
+        if ($Property.Membertype -eq 'Property' -and -not $Property.IsInstance)
+        {
+            [void]$Def.Append("static ")
+        }
+        [void]$Def.Append("[").Append($Type).Append("]")
         [void]$Def.Append("$").AppendLine($Property.Name)
     }
     [void]$Def.AppendLine("#endregion Properties")
