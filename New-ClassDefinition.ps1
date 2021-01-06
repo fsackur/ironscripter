@@ -103,7 +103,10 @@ function New-ClassDefinition
 
         [void]$Def.AppendLine("{")
         [void]$Def.AppendLine("# Replace with your own method definition")
-        [void]$Def.Append("return [").Append($Type).AppendLine("]::new()")
+        if ($Type -ne 'void')
+        {
+            [void]$Def.Append("return [").Append($Type).AppendLine("]::new()")
+        }
         [void]$Def.AppendLine("}")
     }
     [void]$Def.AppendLine("#endregion Methods")
