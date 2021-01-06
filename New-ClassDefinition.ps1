@@ -58,6 +58,12 @@ function New-ClassDefinition
         [void]$Def.AppendLine("{")
         [void]$Def.AppendLine("# Replace with your own ctor definition")
         [void]$Def.AppendLine("}")
+
+        [void]$Def.AppendLine()
+    }
+    if ($Ctors)
+    {
+        $Def.Length -= [Environment]::NewLine.Length
     }
     [void]$Def.AppendLine("#endregion Constructors")
 
@@ -87,6 +93,12 @@ function New-ClassDefinition
         }
         [void]$Def.Append("[").Append($Type).Append("]")
         [void]$Def.Append("$").AppendLine($Property.Name)
+
+        [void]$Def.AppendLine()
+    }
+    if ($Properties)
+    {
+        $Def.Length -= [Environment]::NewLine.Length
     }
     [void]$Def.AppendLine("#endregion Properties")
 
@@ -142,6 +154,12 @@ function New-ClassDefinition
             [void]$Def.Append("return [").Append($Type).AppendLine("]::new()")
         }
         [void]$Def.AppendLine("}")
+
+        [void]$Def.AppendLine()
+    }
+    if ($Methods)
+    {
+        $Def.Length -= [Environment]::NewLine.Length
     }
     [void]$Def.AppendLine("#endregion Methods")
 
