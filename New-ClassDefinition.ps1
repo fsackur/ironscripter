@@ -15,7 +15,11 @@ function New-ClassDefinition
         [object]$InputObject,
 
         [Parameter(Mandatory)]
-        [string]$ClassName
+        [string]$ClassName,
+
+        [string[]]$Property,
+
+        [string[]]$ExcludeProperty
     )
 
     $Def = [Text.StringBuilder]::new()
@@ -24,7 +28,15 @@ function New-ClassDefinition
 
 
     [void]$Def.AppendLine("#region Properties")
-    $Properties = $InputObject.PSObject.Properties | Sort-Object IsInstance, Name
+    $Properties = $InputObject.PSObject.Properties |
+        Sort-Object IsInstance, Name
+
+    $PropertyNames = $Properties.Name |
+        Where-Object {$_ -notin $ExcludeProperty} |
+        Where-Object {-not $Property -or $_ -in $Property}
+    Remove-Variable Property
+
+    $Properties = ($Properties | Group-Object Name -AsHashtable)[$PropertyNames]
     foreach ($Property in $Properties)
     {
         $Type = $Property.TypeNameOfValue -replace "^System."
